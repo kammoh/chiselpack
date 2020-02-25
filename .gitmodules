@@ -9,7 +9,7 @@
 	url = ../chisel-testers2
 [submodule "treadle"]
 	path = treadle
-	url = https://github.com/freechipsproject/treadle.git
+	url = ../treadle
 [submodule "diagrammer"]
 	path = diagrammer
 	url = https://github.com/freechipsproject/diagrammer.git
