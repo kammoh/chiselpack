@@ -1,0 +1,15 @@
+[submodule "firrtl"]
+	path = firrtl
+	url = ../firrtl
+[submodule "chisel3"]
+	path = chisel3
+	url = ../chisel3
+[submodule "chiseltest"]
+	path = chiseltest
+	url = ../chisel-testers2
+[submodule "treadle"]
+	path = treadle
+	url = https://github.com/freechipsproject/treadle.git
+[submodule "diagrammer"]
+	path = diagrammer
+	url = https://github.com/freechipsproject/diagrammer.git
