@@ -62,9 +62,9 @@ lazy val chisel = (project in file("chisel3"))
   .aggregate(firrtl, coreMacros, chiselFrontend)
 
 
-lazy val chiseltest = (project in file("chisel-testers2"))
+lazy val chiseltest = (project in file("chiseltest"))
   .dependsOn(firrtl, treadle, chisel)
-  .aggregate(firrtl, treadle, chisel)
+  //.aggregate(firrtl, treadle, chisel)
   .settings(publish / skip := true)
 
 
