@@ -1,3 +1,5 @@
+![Sonatype Nexus (Snapshots)](https://badges.genua.fr/nexus/s/xyz.kamyar/chiselpack_2.12?server=https%3A%2F%2Foss.sonatype.org)
+
 # WORK IN PROGRESS!
 Trying to figure out:
 - how to add inter-project dependencies to subprojects (e.g. chisel depends on local firrlt subproject)
