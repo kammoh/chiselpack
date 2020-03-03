@@ -10,7 +10,7 @@ publishTo := sonatypePublishToBundle.value
 
 lazy val chisel = (project in file("chisel3"))
   .settings(publish / skip := true)
-//  .settings(unmanagedBase := (unmanagedBase in root).value)
+  //  .settings(unmanagedBase := (unmanagedBase in root).value)
   .dependsOn(firrtl)
   .settings(addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full))
   .dependsOn(firrtl, coreMacros, chiselFrontend)
@@ -25,6 +25,8 @@ lazy val chiseltest = (project in file("chiseltest"))
 
 lazy val firrtl = (project in file("firrtl"))
   .settings(publish / skip := true)
+
+
 
 lazy val chiselFrontend = (project in file("chisel3/chiselFrontend"))
   .settings(addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full))
@@ -42,11 +44,11 @@ lazy val treadle = (project in file("treadle"))
   .settings(publish / skip := true)
 
 lazy val diagrammer = (project in file("diagrammer"))
-  .dependsOn(firrtl,treadle, chisel)
+  .dependsOn(firrtl, treadle, chisel)
   .aggregate(firrtl, treadle, chisel)
   .settings(publish / skip := true)
 
-lazy val subProjects = Seq(treadle, firrtl, coreMacros, chiselFrontend, chisel, chiseltest, diagrammer)
+val subProjects = Seq(firrtl, treadle, coreMacros, chiselFrontend, chisel, chiseltest, diagrammer)
 
 lazy val settingsAlreadyOverriden = SettingKey[Boolean]("settingsAlreadyOverriden", "Has overrideSettings command already run?")
 settingsAlreadyOverriden := false
@@ -57,6 +59,15 @@ commands += Command.command("overrideSettings") { state =>
     Project.extract(state).appendWithSession(
       subProjects.flatMap { subproject =>
         Seq(
+//          subproject / Compile / compile := (Def.taskDyn {
+//            subproject.dependsOn(RootProject(file("firrtl"))).aggregate(firrtl)
+//            val c = (subproject / Compile / compile).value
+//            Def.task {
+//              println(s"here subproject = ${subproject.id}")
+//              c
+//            }
+//          }).value,
+          subproject / publish / skip := true,
           subproject / organization := organization.value,
           subproject / scalaVersion := scalaVersion.value,
           subproject / libraryDependencies := (subproject / libraryDependencies).value.filter(_.organization != "edu.berkeley.cs"),
@@ -69,7 +80,7 @@ commands += Command.command("overrideSettings") { state =>
   }
 }
 
-onLoad in Global := {
+Global / onLoad := {
   ((s: State) => {
     "overrideSettings" :: s
   }) compose (onLoad in Global).value
@@ -78,10 +89,10 @@ onLoad in Global := {
 lazy val root = RootProject(file("."))
 
 lazy val chiselpack = (project in file("."))
-  .aggregate(chisel, chiselFrontend, coreMacros, chiseltest, diagrammer)
+  .aggregate(subProjects.map(Project.projectToRef): _*)
   .settings(publish / skip := false)
   .settings(
-    aggregate := false,
+    //    aggregate := false,
     exportJars := true,
   )
   .settings(subProjects.flatMap { subproject =>
@@ -89,7 +100,7 @@ lazy val chiselpack = (project in file("."))
       mappings in(Compile, packageSrc) ++= (mappings in(subproject, Compile, packageSrc)).value,
     )
   })
-  .settings(subProjects.map { subproject  =>
+  .settings(subProjects.map { subproject =>
     libraryDependencies ++= (subproject / libraryDependencies).value.filter(m => m.configurations.isEmpty && m.organization != "edu.berkeley.cs" &&
       m.organization != organization.value)
   })
